@@ -33,25 +33,25 @@ typedef struct _clock_time
   uint8_t hour;
   uint8_t minute;
   uint8_t second;
-  uint8_t day;
-  uint8_t month;
-  uint8_t year;
 } clock_time;
 
 // function prototypes:
 void get_i2c_time(void);
+void set_i2c_time(void);
 
 // global variables:
 clock_time g_ctime;
 
 // eeprom variables:
+clock_time EEMEM turn_on, turn_off;
+uint8_t EEMEM tpow_on, tpow_off;
 
 // main:
 void
 main (void)
 {
-  // uint8_t initial_s = MCUSR;
-  // MCUSR = 0;
+  uint8_t initial_s = MCUSR;
+  MCUSR = 0;
   wdt_enable(WDTO_250MS);
   wdt_reset();
 
@@ -78,6 +78,12 @@ ISR(INT1_vect)
 
 void
 get_i2c_time(void)
+{
+
+}
+
+void
+set_i2c_time(void)
 {
 
 }
