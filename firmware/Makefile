@@ -2,7 +2,7 @@
 MCU_TARGET = atmega8
 PGR = main
 CCFLAGS = -Wall -Wextra -Os --short-enums -flto
-PGR_HW = usbasp
+PROG_HW = usbasp
 
 .PHONY: all full prog_lfuse prog_hfuse prog_full prog_verify pon poff clean tar size sim test
 
@@ -31,33 +31,33 @@ build/$(PGR).o: $(PGR).c $(MODCF)
 	avr-gcc -g $(CCFLAGS) -mmcu=$(MCU_TARGET) -c $(PGR).c -o build/$(PGR).o
 
 prog: build/$(PGR).hex
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -U flash:w:'build/$(PGR).hex':a
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -U flash:w:'build/$(PGR).hex':a
 
 prog_full: build/$(PGR).hex build/$(PGR)_eeprom.hex ./build/$(PGR).elf
 	avr-objcopy -O binary --only-section=.fuse build/main.elf build/$(PGR)_fuses.bin
 	split -b 1 build/$(PGR)_fuses.bin 'build/fuse'
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -e -U flash:w:'build/$(PGR).hex':a -U eeprom:w:'build/$(PGR)_eeprom.hex':a -U hfuse:w:'build/fuseab':r -U lfuse:w:'build/fuseaa':r
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -e -U flash:w:'build/$(PGR).hex':a -U eeprom:w:'build/$(PGR)_eeprom.hex':a -U hfuse:w:'build/fuseab':r -U lfuse:w:'build/fuseaa':r
 	rm build/fusea* build/$(PGR)_fuses.bin
 
 prog_eeprom: build/$(PGR)_eeprom.hex
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -U eeprom:w:'build/$(PGR)_eeprom.hex':a
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -U eeprom:w:'build/$(PGR)_eeprom.hex':a
 
 prog_lfuse: ./build/$(PGR).elf
 	avr-objcopy -O binary --only-section=.fuse build/main.elf build/$(PGR)_fuses.bin
 	split -b 1 build/$(PGR)_fuses.bin 'build/fuse'
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -U lfuse:w:'build/fuseaa':r
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -U lfuse:w:'build/fuseaa':r
 	rm build/fusea* build/$(PGR)_fuses.bin
 
 prog_hfuse: ./build/$(PGR).elf
 	avr-objcopy -O binary --only-section=.fuse build/main.elf build/$(PGR)_fuses.bin
 	split -b 1 build/$(PGR)_fuses.bin 'build/fuse'
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -U hfuse:w:'build/fuseab':r
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -U hfuse:w:'build/fuseab':r
 	rm build/fusea* build/$(PGR)_fuses.bin
 
 prog_verify: ./build/$(PGR).elf
 	avr-objcopy -O binary --only-section=.fuse build/main.elf build/$(PGR)_fuses.bin
 	split -b 1 build/$(PGR)_fuses.bin 'build/fuse'
-	avrdude -c $(PGR_HW) -p $(MCU_TARGET) -U flash:v:'build/$(PGR).hex':a -U eeprom:v:'build/$(PGR)_eeprom.hex':a -U hfuse:v:'build/fuseab':r -U lfuse:v:'build/fuseaa':r
+	avrdude -c $(PROG_HW) -p $(MCU_TARGET) -U flash:v:'build/$(PGR).hex':a -U eeprom:v:'build/$(PGR)_eeprom.hex':a -U hfuse:v:'build/fuseab':r -U lfuse:v:'build/fuseaa':r
 	rm build/fusea* build/$(PGR)_fuses.bin
 
 pon:
