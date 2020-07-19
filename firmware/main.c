@@ -6,14 +6,17 @@
 #include <avr/sleep.h>
 #include <util/atomic.h>
 
+#define F_CPU 8000000UL
+#include <util/delay.h>
+
+#define BAUD 9600
+#include <util/setbaud.h>
+
 FUSES =
 {
     .low = (LFUSE_DEFAULT),
     .high = (HFUSE_DEFAULT),
 };
-
-#define F_CPU 8000000UL
-#include <util/delay.h>
 
 // definitions/macros:
 #define SET_FLAG(x) (g_flags|=(x))
@@ -24,13 +27,26 @@ FUSES =
 #define MAXOF(x,y) (((x)>(y))?(x):(y))
 #define MINOF(x,y) (((x)<(y))?(x):(y))
 
+// structs:
+typedef struct _clock_time
+{
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
+  uint8_t day;
+  uint8_t month;
+  uint8_t year;
+} clock_time;
+
 // function prototypes:
-uint8_t get_i2c_hour(void);
+void get_i2c_time(void);
 
 // global variables:
+clock_time g_ctime;
 
 // eeprom variables:
 
+// main:
 void
 main (void)
 {
@@ -41,6 +57,8 @@ main (void)
 
   while(1) // main loop
   {
+
+
     wdt_reset();
   }
 }
@@ -48,13 +66,18 @@ main (void)
 // interrupts:
 ISR(INT0_vect)
 {
-  
+
+}
+
+ISR(INT1_vect)
+{
+
 }
 
 // functions:
 
-uint8_t
-get_i2c_hour(void)
+void
+get_i2c_time(void)
 {
 
 }
