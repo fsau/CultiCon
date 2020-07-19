@@ -25,6 +25,7 @@ FUSES =
 #define MINOF(x,y) (((x)<(y))?(x):(y))
 
 // function prototypes:
+uint8_t get_i2c_hour(void);
 
 // global variables:
 
@@ -42,4 +43,18 @@ main (void)
   {
     wdt_reset();
   }
+}
+
+// interrupts:
+ISR(INT0_vect)
+{
+  
+}
+
+// functions:
+
+uint8_t
+get_i2c_hour(void)
+{
+
 }
