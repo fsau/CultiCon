@@ -1,8 +1,8 @@
+# CultiCon
+
 <p align="center">
 <img src="doc/cloverfourleaf.svg" width="200">
 </p>
-
-# CultiCon
 
 ## O que é?
 
