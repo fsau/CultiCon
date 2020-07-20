@@ -1,9 +1,6 @@
-<p align="center">
+<img src="doc/cloverfourleaf.svg" width="150">
 
 # CultiCon
-
-<img src="doc/cloverfourleaf.svg" width="200">
-</p>
 
 ## O que é?
 
