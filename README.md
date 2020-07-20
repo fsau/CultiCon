@@ -1,3 +1,7 @@
+<p align="center">
+<img src="doc/clover-four-leaf.svg" width="400">
+</p>
+
 # CultiCon
 
 ## O que é?
