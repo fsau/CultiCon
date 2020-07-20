@@ -1,5 +1,5 @@
 <p align="center">
-<img src="doc/cloverfourleaf.svg" width="400">
+<img src="doc/cloverfourleaf.svg" width="200">
 </p>
 
 # CultiCon
