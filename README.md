@@ -4,7 +4,7 @@
 
 ## O que é?
 
-CultiCon é um temporizador e _datalogger_ programável com suporte para múltiplos sensores (temperatura, umidade, luz, nível de água etc) e saídas com relês e dimmers, adequado para controle de vários tipos de cargas. Sua principal finalidade é controlar bombas de água, ventiladores e lâmpadas em diversos sistemas de cultivo (hidropônicos, indoor, fertiirrigação etc), embora há uma grande variedade de aplicações devido a flexibilidade na sua programação.
+CultiCon é um temporizador e _datalogger_ programável com suporte para múltiplos sensores (temperatura, umidade, luz, nível de água etc) e saídas com relês e dimmers, adequado para controle de vários tipos de cargas. Sua principal finalidade é controlar bombas de água, ventiladores e lâmpadas em diversos sistemas de cultivo (hidropônicos, indoor, fertirrigação etc), embora há uma grande variedade de aplicações devido a flexibilidade na sua programação.
 
 No momento atual trata-se de uma plataforma de desenvolvimento microcontrolada que poderá ser configurada para várias finalidades, contendo uma interface de comunicação isolada para transferência de dados e display alfanumérico com botões para ajustes rápidos de temporização dentre outros parâmetros.
 
