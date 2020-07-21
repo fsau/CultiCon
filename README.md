@@ -14,6 +14,7 @@ O microcontrolador utilizado atualmente é um ATmega8, embora é trivial utiliza
 
 <p align="center">
 <img src="doc/schem.svg" width="500">
+
 Esquemático do circuito com o ATmega8
 </p>
 
