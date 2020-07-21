@@ -13,11 +13,8 @@ No momento atual trata-se de uma plataforma de desenvolvimento microcontrolada q
 O microcontrolador utilizado atualmente é um ATmega8, embora é trivial utilizar o 328p e similares. O firmware também poderá ser instalado em uma placa Arduino Uno com um circuito externo simples para entradas e saídas, dependendo das funções necessárias.
 
 <p align="center">
-<img src="doc/schem.svg" width="500">
-</p>
-
-<p align="center">
-Esquemático do circuito com o ATmega8
+<img src="doc/schem.svg" width="500"><br>
+Circuito do controlador utilizando o ATmega8, na configuração atual
 </p>
 
 ## Montando
