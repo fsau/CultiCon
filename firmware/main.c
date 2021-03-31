@@ -1,33 +1,41 @@
-#define F_CPU 8000000UL
-#define BAUD 9600
-#include "pinout_def.h"
+#include <avr/io.h>
+#include <avr/eeprom.h>
+#include <avr/interrupt.h>
+#include <avr/wdt.h>
+#include <avr/cpufunc.h>
+#include <avr/sleep.h>
+#include <avr/pgmspace.h>
+#include <util/atomic.h>
 
-// global variables:
-clock_time g_ctime;
+#define F_CPU 16000000UL
+#include <util/delay.h>
 
-// eeprom variables:
-clock_time EEMEM turn_on, turn_off;
-uint8_t EEMEM tpow_on, tpow_off;
+#include "dimmer.h"
 
-// functions:
-#include "gfunctions.c"
+// fuses:
+FUSES =
+{
+    .low = ((LFUSE_DEFAULT & FUSE_CKSEL1) | ~(FUSE_CKDIV8&FUSE_CKSEL0)),
+    .high = (HFUSE_DEFAULT),
+    .extended = (EFUSE_DEFAULT),
+};
 
-// interrupts:
+#include "dimmer-glue.c"
+#include "adc-helper.c"
 #include "interrupts.c"
 
-// main:
 void
 main (void)
 {
   uint8_t initial_s = MCUSR;
   MCUSR = 0;
+
   wdt_enable(WDTO_250MS);
   wdt_reset();
 
-  while(1) // main loop
+  // ### main loop ###
+  while(1)
   {
 
-
-    wdt_reset();
   }
 }

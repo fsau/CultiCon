@@ -835,9 +835,9 @@ $EndComp
 Wire Wire Line
 	6250 2400 6300 2400
 Wire Wire Line
-	6300 1900 6400 1900
+	6250 1900 6400 1900
 Wire Wire Line
-	6400 2000 6200 2000
+	6400 2000 6250 2000
 $Comp
 L power:+5V #PWR026
 U 1 1 5F7B2F6D
@@ -860,13 +860,12 @@ F 3 "~" H 7200 2500 50  0001 C CNN
 	1    7200 2500
 	0    -1   -1   0   
 $EndComp
-Text Label 6200 2000 2    50   ~ 0
+Text Label 6250 2000 2    50   ~ 0
 lcd_e
 Text Label 5850 4400 0    50   ~ 0
 lcd_e
 Wire Wire Line
 	5850 4400 5750 4400
-Connection ~ 6300 2100
 Connection ~ 6300 2200
 Wire Wire Line
 	6300 2200 6300 2300
@@ -880,8 +879,6 @@ Wire Wire Line
 	5750 2700 6400 2700
 Wire Wire Line
 	5750 2800 6400 2800
-Wire Wire Line
-	6300 1900 6300 2100
 Connection ~ 6300 2300
 Wire Wire Line
 	6300 2300 6300 2400
@@ -1021,30 +1018,6 @@ F 3 "~" H 10000 4100 50  0001 C CNN
 	1    10000 4100
 	0    1    -1   0   
 $EndComp
-$Comp
-L power:+5V #PWR024
-U 1 1 5FC6D523
-P 5800 4700
-F 0 "#PWR024" H 5800 4550 50  0001 C CNN
-F 1 "+5V" H 5800 4850 50  0000 C CNN
-F 2 "" H 5800 4700 50  0001 C CNN
-F 3 "" H 5800 4700 50  0001 C CNN
-	1    5800 4700
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:Earth #PWR025
-U 1 1 5FC6D88D
-P 5800 5400
-F 0 "#PWR025" H 5800 5150 50  0001 C CNN
-F 1 "Earth" H 5800 5250 50  0001 C CNN
-F 2 "" H 5800 5400 50  0001 C CNN
-F 3 "~" H 5800 5400 50  0001 C CNN
-	1    5800 5400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6200 5100 6100 5100
 $Comp
 L power:Earth #PWR053
 U 1 1 6035B03C
@@ -1224,12 +1197,10 @@ Text Label 6250 1800 2    50   ~ 0
 lcd_rs
 Wire Wire Line
 	6250 1800 6400 1800
-Text Label 5850 4300 0    50   ~ 0
+Text Label 5850 4200 0    50   ~ 0
 lcd_rs
 Wire Wire Line
-	5750 4200 6200 4200
-Wire Wire Line
-	5850 4300 5750 4300
+	5850 4200 5750 4200
 Connection ~ 9250 1550
 Connection ~ 8950 1650
 Connection ~ 8950 1100
@@ -1282,31 +1253,6 @@ Wire Wire Line
 	7550 2600 7650 2600
 Text Label 7650 2600 0    50   ~ 0
 lcd_bl
-Wire Wire Line
-	6200 4200 6200 4750
-$Comp
-L Device:R R30
-U 1 1 5F327CE0
-P 6000 4750
-F 0 "R30" V 6207 4750 50  0000 C CNN
-F 1 "R" V 6116 4750 50  0000 C CNN
-F 2 "" V 5930 4750 50  0001 C CNN
-F 3 "~" H 6000 4750 50  0001 C CNN
-	1    6000 4750
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	5850 4750 5800 4750
-Wire Wire Line
-	5800 4750 5800 4700
-Wire Wire Line
-	5800 4750 5800 4800
-Connection ~ 5800 4750
-Wire Wire Line
-	6150 4750 6200 4750
-Connection ~ 6200 4750
-Wire Wire Line
-	6200 4750 6200 5100
 Text Label 5850 2800 0    50   ~ 0
 spi_sck
 Text Label 5850 2600 0    50   ~ 0
@@ -1415,8 +1361,6 @@ Connection ~ 5250 4850
 Wire Wire Line
 	5250 4900 5250 4850
 Wire Wire Line
-	3450 6550 3350 6550
-Wire Wire Line
 	4850 6250 4750 6250
 $Comp
 L power:Earth #PWR052
@@ -1453,8 +1397,6 @@ F 3 "~" H 4350 7350 50  0001 C CNN
 	1    4350 7350
 	-1   0    0    -1  
 $EndComp
-Text Label 3450 6550 0    50   ~ 0
-mux_adc
 Wire Wire Line
 	3750 6350 3950 6350
 Wire Wire Line
@@ -1517,68 +1459,6 @@ Wire Wire Line
 Wire Wire Line
 	2400 5600 2400 5650
 Wire Wire Line
-	6350 4750 6300 4750
-Wire Wire Line
-	6650 4750 6700 4750
-$Comp
-L Device:R R31
-U 1 1 5F327F41
-P 6500 4750
-F 0 "R31" V 6707 4750 50  0000 C CNN
-F 1 "R" V 6616 4750 50  0000 C CNN
-F 2 "" V 6430 4750 50  0001 C CNN
-F 3 "~" H 6500 4750 50  0001 C CNN
-	1    6500 4750
-	0    -1   -1   0   
-$EndComp
-Connection ~ 6700 4750
-Wire Wire Line
-	6700 4750 6700 4800
-Wire Wire Line
-	6700 4750 6700 4700
-Wire Wire Line
-	6300 5100 6400 5100
-Wire Wire Line
-	6300 4100 5750 4100
-$Comp
-L power:Earth #PWR031
-U 1 1 601AAEB1
-P 6700 5400
-F 0 "#PWR031" H 6700 5150 50  0001 C CNN
-F 1 "Earth" H 6700 5250 50  0001 C CNN
-F 2 "" H 6700 5400 50  0001 C CNN
-F 3 "~" H 6700 5400 50  0001 C CNN
-	1    6700 5400
-	-1   0    0    -1  
-$EndComp
-$Comp
-L power:+5V #PWR030
-U 1 1 601AAEA7
-P 6700 4700
-F 0 "#PWR030" H 6700 4550 50  0001 C CNN
-F 1 "+5V" H 6700 4850 50  0000 C CNN
-F 2 "" H 6700 4700 50  0001 C CNN
-F 3 "" H 6700 4700 50  0001 C CNN
-	1    6700 4700
-	-1   0    0    -1  
-$EndComp
-$Comp
-L Sensor:DHT11 U11
-U 1 1 601AAE9D
-P 6700 5100
-F 0 "U11" H 6456 5146 50  0000 R CNN
-F 1 "DHT11" H 6456 5055 50  0000 R CNN
-F 2 "Sensor:Aosong_DHT11_5.5x12.0_P2.54mm" H 6700 4700 50  0001 C CNN
-F 3 "http://akizukidenshi.com/download/ds/aosong/DHT11.pdf" H 6850 5350 50  0001 C CNN
-	1    6700 5100
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	6300 4100 6300 4750
-Connection ~ 6300 4750
-Wire Wire Line
-	6300 4750 6300 5100
-Wire Wire Line
 	4200 700  4200 750 
 $Comp
 L power:+12V #PWR011
@@ -1594,17 +1474,6 @@ $EndComp
 Connection ~ 4200 750 
 Wire Wire Line
 	4200 750  4450 750 
-$Comp
-L Sensor:DHT11 U16
-U 1 1 60C0C6FD
-P 5800 5100
-F 0 "U16" H 5556 5146 50  0000 R CNN
-F 1 "DHT11" H 5556 5055 50  0000 R CNN
-F 2 "Sensor:Aosong_DHT11_5.5x12.0_P2.54mm" H 5800 4700 50  0001 C CNN
-F 3 "http://akizukidenshi.com/download/ds/aosong/DHT11.pdf" H 5950 5350 50  0001 C CNN
-	1    5800 5100
-	1    0    0    -1  
-$EndComp
 Connection ~ 3000 1900
 Wire Wire Line
 	3050 1900 3000 1900
@@ -1736,22 +1605,6 @@ F 3 "~" H 2950 7150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:C C14
-U 1 1 5F30AF92
-P 3350 6350
-F 0 "C14" H 3235 6304 50  0000 R CNN
-F 1 "10n" H 3235 6395 50  0000 R CNN
-F 2 "" H 3388 6200 50  0001 C CNN
-F 3 "~" H 3350 6350 50  0001 C CNN
-	1    3350 6350
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3350 6500 3350 6550
-Connection ~ 3350 6550
-Wire Wire Line
-	3350 6550 3300 6550
-$Comp
 L Connector_Generic:Conn_01x03 J6
 U 1 1 5F555A0D
 P 1650 6300
@@ -1876,17 +1729,6 @@ Wire Wire Line
 	1350 2100 1350 3550
 Wire Wire Line
 	1600 1900 1600 2850
-$Comp
-L power:Earth #PWR062
-U 1 1 5F6433B4
-P 3350 6200
-F 0 "#PWR062" H 3350 5950 50  0001 C CNN
-F 1 "Earth" H 3350 6050 50  0001 C CNN
-F 2 "" H 3350 6200 50  0001 C CNN
-F 3 "~" H 3350 6200 50  0001 C CNN
-	1    3350 6200
-	-1   0    0    1   
-$EndComp
 Wire Notes Line
 	550  5900 1950 5900
 Wire Notes Line
@@ -2357,19 +2199,6 @@ $EndComp
 Wire Wire Line
 	7900 3200 7400 3200
 Connection ~ 7900 3200
-$Comp
-L Device:R R16
-U 1 1 5FECD341
-P 3150 6550
-F 0 "R16" V 3357 6550 50  0000 C CNN
-F 1 "1K" V 3266 6550 50  0000 C CNN
-F 2 "" V 3080 6550 50  0001 C CNN
-F 3 "~" H 3150 6550 50  0001 C CNN
-	1    3150 6550
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	3000 6550 2950 6550
 Wire Wire Line
 	5750 3200 6500 3200
 Connection ~ 6500 3200
@@ -2423,8 +2252,6 @@ F 3 "" H 7850 4250 50  0001 C CNN
 	1    7850 4250
 	-1   0    0    -1  
 $EndComp
-Text Label 7450 4600 2    50   ~ 0
-ldr_adc
 Connection ~ 7550 4600
 Wire Wire Line
 	7550 4600 7550 4650
@@ -2474,4 +2301,29 @@ F 3 "" H 4750 6550 50  0001 C CNN
 	1    4750 6550
 	0    1    -1   0   
 $EndComp
+Text Label 7450 4600 2    50   ~ 0
+ldr_adc
+Wire Wire Line
+	3000 6550 2950 6550
+Wire Wire Line
+	3300 6550 3450 6550
+Text Label 3450 6550 0    50   ~ 0
+mux_adc
+$Comp
+L Device:R R16
+U 1 1 5FECD341
+P 3150 6550
+F 0 "R16" V 3357 6550 50  0000 C CNN
+F 1 "100" V 3266 6550 50  0000 C CNN
+F 2 "" V 3080 6550 50  0001 C CNN
+F 3 "~" H 3150 6550 50  0001 C CNN
+	1    3150 6550
+	0    1    -1   0   
+$EndComp
+Text Label 6250 1900 2    50   ~ 0
+lcd_rw
+Text Label 5850 4300 0    50   ~ 0
+lcd_rw
+Wire Wire Line
+	5850 4300 5750 4300
 $EndSCHEMATC
