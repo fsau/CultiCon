@@ -77,5 +77,5 @@ const LCDNode print_tcrit[] PROGMEM =
 const LCDNode* disp_menu[] PROGMEM =
 {
   print_menuhr, print_timeon, print_timeoff, print_dimon, print_dimoff,
-  print_tcrit,
+  print_tcrit, NULL,
 }
