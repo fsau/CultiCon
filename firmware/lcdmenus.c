@@ -24,7 +24,7 @@ set_pos(uint8_t pos)
 }
 
 void
-print_vstr(uint8_t pos, char *str)
+print_memstr(uint8_t pos, char *str)
 {
   uint8_t i = 0;
   char cts = str[0];
@@ -94,16 +94,16 @@ print_rtctime(uint8_t pos, RTCtime *time, uint8_t opt)
   uint8_t buf[2];
   set_pos(pos);
   num2str(buf, time->h, 2);
-  print_vstr(buf);
+  print_memstr(buf);
   lcd_send_data(1,':');
   num2str(buf, time->m, 2);
-  print_vstr(buf);
+  print_memstr(buf);
 
   if(opt&0x01)
   {
     lcd_send_data(1,':');
     num2str(buf, time->s, 2);
-    print_vstr(buf);
+    print_memstr(buf);
   }
 }
 
@@ -179,6 +179,8 @@ print_num(uint8_t pos, uint16_t num, uint8_t int_n, uint8_t frac_n,
   num2str(str_int, num_int, int_n);
   num2str(str_frac, num_frac, frac_n);
 
+  uint8_t k = 0, lead0 = 1;
+
   set_pos(pos);
 
   if(options & pnum_pmsgn)
@@ -188,9 +190,9 @@ print_num(uint8_t pos, uint16_t num, uint8_t int_n, uint8_t frac_n,
   else if(!(options & pnum_abs) && nsgn)
   {
     lcd_send_data(1,'-');
+    k = 1; // skip first integer digit for equal total print length
   }
 
-  uint8_t k = 0, lead0 = 1;
   while(k<int_n)
   {
     if((options&pnum_rlead0) && lead0 && (str_int[k]=='0') && (k<(int_n-1)))
@@ -232,18 +234,19 @@ load_node(const LCDNode* nodetp)
     case node_print_Pstr:
       print_Pstr(lnode.arg, lnode.ptr.s);
       break;
-    case node_print_vstr:
-      print_vstr(lnode.arg, lnode.ptr.v);
+    case node_print_memstr:
+      print_memstr(lnode.arg, lnode.ptr.v);
       break;
     case node_print_hhmmss:
       zero=1;
     case node_print_hhmm:
-      RTCtime *time = lnode.ptr.v;
-      print_rtctime(lnode.arg, time, zero);
+      print_rtctime(lnode.arg, (RTCtime*)lnode.ptr.v, zero);
       break;
     case node_print_temp:
+      print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 1, pnum_default);
       break;
     case node_print_perc:
+      print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 0, pnum_int|pnum_perc);
       break;
     case node_edit_hhmm:
     case node_edit_hhmmss:
@@ -265,7 +268,7 @@ is_node_final(const LCDNode* node)
   switch(node.type)
   {
     case node_print_Pstr:
-    case node_print_vstr:
+    case node_print_memstr:
     case node_print_hhmm:
     case node_print_hhmmss:
     case node_print_temp:

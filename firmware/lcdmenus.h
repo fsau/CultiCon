@@ -12,7 +12,7 @@ enum lcd_input_e
 
 enum lcd_node_type_e
 {
-  node_null=0, node_print_Pstr, node_print_vstr, node_print_hhmm,
+  node_null=0, node_print_Pstr, node_print_memstr, node_print_hhmm,
   node_print_hhmmss, node_print_temp, node_print_perc, node_edit_hhmm,
   node_edit_hhmmss, node_edit_temp, node_edit_perc, node_set_menu,
 };
