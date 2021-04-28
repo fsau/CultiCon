@@ -10,6 +10,7 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
+#include "pins_defs.h"
 #include "dimmer.h"
 
 // fuses:

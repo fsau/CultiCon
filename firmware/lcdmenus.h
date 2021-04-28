@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include "pins-defs.h"
 
 #define LINE_SIZE 16
 #define LINE_N 2
