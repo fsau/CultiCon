@@ -5,30 +5,32 @@
 #define LINE_N 2
 #define INPUT_N 4
 
-enum lcd_input
+enum lcd_input_e
 {
   input_none=0, input_home=1, input_ok=2, input_incr=3, input_decr=4,
 };
 
-enum lcd_node_type
+enum lcd_node_type_e
 {
   node_null=0, node_print_Pstr, node_print_vstr, node_print_hhmm,
   node_print_hhmmss, node_print_temp, node_print_perc, node_edit_hhmm,
   node_edit_hhmmss, node_edit_temp, node_edit_perc, node_set_menu,
 };
 
-union lcd_pointer
+union lcd_pointer_u
 {
   PGR_P s;
   void *v;
 };
 
-typedef struct _lcd_node
+typedef struct _lcd_node_s
 {
   enum lcd_node_type type;
   union lcd_pointer ptr;
   uint8_t arg;
 } LCDNode;
+
+// Extern variables interface:
 
 extern PGR_P *g_status_string;
 extern RTCtime g_curr_time;
@@ -48,4 +50,4 @@ void lcd_input(LCDInput);
 
 // Application specific:
 
-extern void lcd_send_data(uint8_t data, uint8_t rs);
+extern void lcd_send_data(uint8_t rs, uint8_t data);
