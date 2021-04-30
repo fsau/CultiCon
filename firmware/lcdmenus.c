@@ -1,16 +1,52 @@
 #include "lcdmenus.h"
+
+#define NULL (void*)0
+
+// Private types:
+enum lcd_node_type_e
+{
+  node_null=0, node_print_Pstr, node_print_memstr, node_print_hhmm,
+  node_print_hhmmss, node_print_temp, node_print_perc, node_edit_hhmm,
+  node_edit_hhmmss, node_edit_temp, node_edit_perc, node_set_menu,
+};
+
+union lcd_pointer_u
+{
+  const LCDNode* const *n;
+  const char *s;
+  void *v;
+};
+
+typedef struct _lcd_node_s
+{
+  enum lcd_node_type_e type;
+  union lcd_pointer_u ptr;
+  uint8_t arg;
+} LCDNode;
+
+// PGM_P *g_status_string=NULL;
+// RTCtime *g_curr_time=NULL;
+// RTCtime *g_timer_on=NULL;
+// RTCtime *g_timer_off=NULL;
+// fp_t *g_dtemp=NULL;
+// fp_t *g_crtemp=NULL;
+// fp_t *g_dhumd=NULL;
+// fp_t *g_dimmer_on=NULL;
+// fp_t *g_dimmer_off=NULL;
+
+// LCD menus specifications:
 #include "main-menu.c"
 
 // Private/internal variables:
-
-LCDNode *cmode_node, *cinput_node;
+const LCDNode *cmode_node=NULL, *cinput_node, *cmenu_node;
+LCDInput input_flags=0;
+uint8_t menu_state;
 
 // Private functions:
-
 void
 set_pos(uint8_t pos)
 {
-  uint8_t line = pos/SIZE_LINE;
+  uint8_t line = pos/LINE_SIZE;
   int8_t offset = 0;
   switch(line)
   {
@@ -20,7 +56,7 @@ set_pos(uint8_t pos)
     case 2: offset = 20; break;
     case 3: offset = 84; break;
   }
-  lcd_send_data(0,0x80 + offset + (pos%SIZE_LINE));
+  lcd_send_data(0,0x80 + offset + (pos%LINE_SIZE));
 }
 
 void
@@ -29,7 +65,7 @@ print_memstr(uint8_t pos, char *str)
   uint8_t i = 0;
   char cts = str[0];
 
-  set_pos(pos);
+  if(pos!=0xFF) set_pos(pos);
 
   do
   {
@@ -42,12 +78,12 @@ print_memstr(uint8_t pos, char *str)
 }
 
 void
-print_Pstr(uint8_t pos, PGR_P str)
+print_Pstr(uint8_t pos, PGM_P str)
 {
   uint8_t i = 0;
   char cts = pgm_read_byte(&str[0]);
 
-  set_pos(pos);
+  if(pos!=0xFF) set_pos(pos);
 
   do
   {
@@ -91,19 +127,18 @@ pow10e(uint8_t pow)
 void
 print_rtctime(uint8_t pos, RTCtime *time, uint8_t opt)
 {
-  uint8_t buf[2];
-  set_pos(pos);
+  char buf[2];
   num2str(buf, time->h, 2);
-  print_memstr(buf);
+  print_memstr(pos,buf);
   lcd_send_data(1,':');
   num2str(buf, time->m, 2);
-  print_memstr(buf);
+  print_memstr(0xFF,buf);
 
   if(opt&0x01)
   {
     lcd_send_data(1,':');
     num2str(buf, time->s, 2);
-    print_memstr(buf);
+    print_memstr(0xFF,buf);
   }
 }
 
@@ -113,30 +148,43 @@ enum pnum_opts
   pnum_onlypos=1, // crop to 0~inf
   pnum_int=2, // use no frac bit
   pnum_perc=4, // crop to 0~100
-  pnum_rlead0=8, // remove leading 0's
-  pnum_pmsgn=16, // print + sign
-  pnum_abs=32, // never print - sign
-  pnum_halfp=64, // use half the frac bits
+  pnum_rlead0=8, // remove leading 0s
+  pnum_pmsgn=16, // print +/- sign
+  pnum_abs=32, // ignore sign
+  pnum_halfp=64, // use half the frac bits for large numbers
 };
 
 void
-print_num(uint8_t pos, uint16_t num, uint8_t int_n, uint8_t frac_n,
+print_num(uint8_t pos, fp_t num, uint8_t int_n, uint8_t frac_n,
   enum pnum_opts options)
 {
   char str_int[int_n], str_frac[frac_n];
   uint8_t nsgn = 0;
 
-  if(num<0)
+  if((num<0))
   {
-    nsgn = 1;
     if(options & pnum_onlypos)
     {
       num = 0;
     }
     else
     {
-      num *= -1;
+      num *= -1; // keep abs value
     }
+    nsgn = 1;
+  }
+
+  if((options & pnum_perc))
+  {
+    if(nsgn)
+    {
+      num = 0;
+    }
+    else if(num > 100*FP_ONE)
+    {
+      num = 100*FP_ONE;
+    }
+    nsgn=0;
   }
 
   uint16_t num_frac, num_int;
@@ -161,73 +209,76 @@ print_num(uint8_t pos, uint16_t num, uint8_t int_n, uint8_t frac_n,
     num_frac = (pow10e(frac_n)*num)>>FP_FRACTIONAL_BITS;
   }
 
-  if((options & pnum_perc))
-  {
-    if(nsgn)
-    {
-      num_int = 0;
-      num_frac = 0;
-    }
-    else if(num_int > 100)
-    {
-      num_int = 100;
-      num_frac = 0;
-    }
-    nsgn=0;
-  }
-
   num2str(str_int, num_int, int_n);
   num2str(str_frac, num_frac, frac_n);
 
-  uint8_t k = 0, lead0 = 1;
+  if(pos!=0xFF) set_pos(pos);
 
-  set_pos(pos);
-
-  if(options & pnum_pmsgn)
+  for(uint8_t i = 0, lead0 = 1;i<int_n;i++)
   {
-    lcd_send_data(1,(nsgn)?'-':'+');
-  }
-  else if(!(options & pnum_abs) && nsgn)
-  {
-    lcd_send_data(1,'-');
-    k = 1; // skip first integer digit for equal total print length
-  }
-
-  while(k<int_n)
-  {
-    if((options&pnum_rlead0) && lead0 && (str_int[k]=='0') && (k<(int_n-1)))
+    if((options&pnum_rlead0) && lead0 && (str_int[i]=='0') && (i<(int_n-1)))
     {
       lcd_send_data(1,' ');
     }
     else
     {
+      if(lead0 && (options & pnum_pmsgn))
+      {
+        lcd_send_data(1,(nsgn)?'-':'+');
+      }
+      else
+      {
+        if(~options & pnum_abs) lcd_send_data(1,(nsgn)?'-':' ');
+      }
       lead0=0;
-      lcd_send_data(1,str_int[k]);
+
+      lcd_send_data(1,str_int[i]);
     }
-    k++;
   }
 
-  if(!(options & pnum_int))
+  if(!(options & pnum_int)&&frac_n)
   {
     lcd_send_data(1,'.');
   }
 
-  k = 0;
-  while((k<frac_n))
+  for(uint8_t i = 0; i<frac_n; i++)
   {
-    lcd_send_data(1,str_frac[k]);
-    k++;
+    lcd_send_data(1,str_frac[i]);
   }
+}
+
+void
+update_menu(const LCDNode* const menu_table[])
+{
+  switch(input_flags)
+  {
+    case input_ok:
+      break;
+    case input_incr:
+      menu_state++;
+      if(pgm_read_ptr(menu_table[menu_state])==NULL) menu_state--;
+        cmode_node=pgm_read_ptr(menu_table[menu_state]);
+      break;
+    case input_decr:
+      if(menu_state) menu_state--;
+      cmode_node=pgm_read_ptr(menu_table[menu_state]);
+      break;
+    case input_home:
+    case input_none:
+    default:
+      break;
+  }
+  input_flags=input_none;
 }
 
 // Node functions:
 
-void
-load_node(const LCDNode* nodetp)
+uint8_t
+print_node(const LCDNode* nodetp)
 {
+  uint8_t carry=0;
   LCDNode lnode;
   memcpy_P(&lnode, nodetp, sizeof(lnode));
-  uint8_t zero=0;
 
   switch(lnode.type)
   {
@@ -238,56 +289,55 @@ load_node(const LCDNode* nodetp)
       print_memstr(lnode.arg, lnode.ptr.v);
       break;
     case node_print_hhmmss:
-      zero=1;
+      carry|=1;
     case node_print_hhmm:
-      print_rtctime(lnode.arg, (RTCtime*)lnode.ptr.v, zero);
+      print_rtctime(lnode.arg, (RTCtime*)lnode.ptr.v, carry&1);
       break;
     case node_print_temp:
       print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 1, pnum_default);
       break;
     case node_print_perc:
-      print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 0, pnum_int|pnum_perc);
+      print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 0, pnum_perc);
       break;
-    case node_edit_hhmm:
+    case node_set_menu:
+      cmenu_node = nodetp;
     case node_edit_hhmmss:
+    case node_edit_hhmm:
     case node_edit_temp:
     case node_edit_perc:
-    case node_set_menu:
-      cinput_node=nodetp;
-      break;
+      carry|=2;
+      cinput_node = nodetp;
     default:
       break;
   }
+
+  return carry&2;
 }
 
-uint8_t
-is_node_final(const LCDNode* node)
+void
+input_node(const LCDNode* inPnode)
 {
-  uint8_t final=1;
+  LCDNode innode;
+  memcpy_P(&innode, inPnode, sizeof(innode));
 
-  switch(node.type)
+  switch(innode.type)
   {
-    case node_print_Pstr:
-    case node_print_memstr:
-    case node_print_hhmm:
-    case node_print_hhmmss:
-    case node_print_temp:
-    case node_print_perc:
-      final=0;
-    default:
+    case node_set_menu:
+      update_menu(innode.ptr.n);
       break;
+    case node_edit_hhmmss:
+    case node_edit_hhmm:
+    case node_edit_temp:
+    case node_edit_perc:
+    default:
+    break;
   }
-
-  return final;
 }
 
 void
 read_mode(const LCDNode* mode)
 {
-  do
-  {
-    load_node(mode);
-  } while(!is_node_final(mode++));
+  while(print_node(mode++)==0);
 }
 
 // Public functions:
@@ -297,26 +347,25 @@ lcd_init(void)
 {
   lcd_send_data(0,0x00);
 
-  long_delay(0);
+  _delay_ms(150);
 
   lcd_send_data(0,0x30);
-  long_delay(1);
+  _delay_ms(8);
   lcd_send_data(0,0x30);
-  long_delay(1);
+  _delay_ms(8);
   lcd_send_data(0,0x30);
-  long_delay(1);
+  _delay_ms(8);
 
-  lcd_send_data(0,0x20);
-
-  long_delay(2);
+  lcd_send_data(0,0x20); // 4 bit
+  _delay_ms(5);
   lcd_send_data(0, 0x28); // 4 bit/2 line
-  long_delay(2);
+  _delay_ms(5);
   lcd_send_data(0, 0x08); // display off
-  long_delay(2);
+  _delay_ms(5);
   lcd_send_data(0, 0x01); // clear ram
-  long_delay(2);
+  _delay_ms(5);
   lcd_send_data(0, 0x02); // return home
-  long_delay(2);
+  _delay_ms(5);
   lcd_send_data(0, 0x06); // auto increment, no shift
 
   // // Load CGRAM for special characters:
@@ -326,28 +375,14 @@ lcd_init(void)
   //   lcd_send_data(1, pgm_read_byte(&special_c[k])-'F');
   // }
 
-  long_delay(2);
+  _delay_ms(5);
   lcd_send_data(0, 0x0C); // display on, cursor off
 }
 
 void
 lcd_input(LCDInput input)
 {
-  switch(cinput_node.type)
-  {
-    case node_edit_hhmm:
-      break;
-    case node_edit_hhmmss:
-      break;
-    case node_edit_temp:
-      break;
-    case node_edit_perc:
-      break;
-    case node_set_menu:
-      break;
-    default:
-      break;
-  }
+  input_flags |= input;
 }
 
 void
