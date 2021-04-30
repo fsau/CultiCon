@@ -41,13 +41,6 @@ const char str_perc[] PROGMEM = "%rh";
 // fp_t *g_dimmer_on=NULL;
 // fp_t *g_dimmer_off=NULL;
 
-const LCDNode print_init[] PROGMEM =
-{
-  {.arg=0,.type=node_print_Pstr,.ptr.s=str_culticn},
-  {.arg=LINE_SIZE,.type=node_print_Pstr,.ptr.s=str_inicial},
-  {.type=node_null},
-};
-
 const LCDNode print_menuhr[] PROGMEM =
 {
   {.arg=0,.type=node_print_Pstr,.ptr.s=str_perc},
@@ -109,6 +102,13 @@ const LCDNode print_main[] PROGMEM =
   {.arg=LINE_SIZE+3,.type=node_print_Pstr,.ptr.s=str_degc},
   {.arg=LINE_SIZE+13,.type=node_print_Pstr,.ptr.s=str_perc},
   {.arg=menu_len,.type=node_set_menu,.ptr.n=disp_menu},
+};
+
+const LCDNode print_init[] PROGMEM =
+{
+  {.arg=0,.type=node_print_Pstr,.ptr.s=str_culticn},
+  {.arg=LINE_SIZE,.type=node_print_Pstr,.ptr.s=str_inicial},
+  {.arg=0,.type=node_goto_mode,.ptr.m=print_main},
 };
 
 const LCDNode *print_init_v=print_init;

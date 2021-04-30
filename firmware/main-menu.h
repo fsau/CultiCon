@@ -32,4 +32,9 @@ extern fp_t *g_dhumd;
 extern fp_t *g_dimmer_on;
 extern fp_t *g_dimmer_off;
 
+// Internal variables
+extern const LCDNode *print_init_v;
+extern const char *str_stson_v;
+extern const char *str_stsoff_v;
+
 #endif

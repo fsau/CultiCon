@@ -18,8 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "lcdmenus.h"
 
-#define NULL (void*)0
-
 // Private/internal variables:
 const LCDNode *cmode_node=NULL, *cinput_node, *cmenu_node;
 LCDInput input_flags=0;
@@ -231,22 +229,21 @@ print_num(uint8_t pos, fp_t num, uint8_t int_n, uint8_t frac_n,
 }
 
 void
-update_menu(const LCDNode* const menu_table[])
+update_menu(const LCDNode* const menu_table[], uint8_t menu_len)
 {
   switch(input_flags)
   {
-    case input_ok:
+    case input_select:
       break;
-    case input_incr:
-      menu_state++;
-      if(pgm_read_ptr(menu_table[menu_state])==NULL) menu_state--;
-        cmode_node=pgm_read_ptr(menu_table[menu_state]);
-      break;
-    case input_decr:
-      if(menu_state) menu_state--;
+    case input_up:
+      if(++menu_state == menu_len) menu_state=0;
       cmode_node=pgm_read_ptr(menu_table[menu_state]);
       break;
-    case input_home:
+    case input_down:
+      if(menu_state--) menu_state = menu_len-1;
+      cmode_node=pgm_read_ptr(menu_table[menu_state]);
+      break;
+    case input_cancel:
     case input_none:
     default:
       break;
@@ -259,7 +256,7 @@ update_menu(const LCDNode* const menu_table[])
 uint8_t
 print_node(const LCDNode* nodetp)
 {
-  uint8_t carry=0;
+  uint8_t ret=0;
   LCDNode lnode;
   memcpy_P(&lnode, nodetp, sizeof(lnode));
 
@@ -272,9 +269,9 @@ print_node(const LCDNode* nodetp)
       print_memstr(lnode.arg, lnode.ptr.v);
       break;
     case node_print_hhmmss:
-      carry|=1;
+      ret|=1;
     case node_print_hhmm:
-      print_rtctime(lnode.arg, (RTCtime*)lnode.ptr.v, carry&1);
+      print_rtctime(lnode.arg, (RTCtime*)lnode.ptr.v, ret&1);
       break;
     case node_print_temp:
       print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 1, pnum_default);
@@ -283,18 +280,19 @@ print_node(const LCDNode* nodetp)
       print_num(lnode.arg, *(fp_t*)lnode.ptr.v, 2, 0, pnum_perc);
       break;
     case node_set_menu:
-      cmenu_node = nodetp;
     case node_edit_hhmmss:
     case node_edit_hhmm:
     case node_edit_temp:
     case node_edit_perc:
-      carry|=2;
+    case node_edit_perc:
+    case node_goto_mode:
+      ret|=2;
       cinput_node = nodetp;
     default:
       break;
   }
 
-  return carry&2;
+  return ret&2;
 }
 
 void
@@ -306,7 +304,7 @@ input_node(const LCDNode* inPnode)
   switch(innode.type)
   {
     case node_set_menu:
-      update_menu(innode.ptr.n);
+      update_menu(innode.ptr.n, innode.arg);
       break;
     case node_edit_hhmmss:
     case node_edit_hhmm:
@@ -361,7 +359,7 @@ lcd_init(LCDNode *init)
   _delay_ms(5);
   lcd_send_data(0, 0x0C); // display on, cursor off
 
-
+  read_mode(init);
 }
 
 void

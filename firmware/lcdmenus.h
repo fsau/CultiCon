@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <stddef.h>
 #include "pins-defs.h"
 
 #define LINE_SIZE 16
@@ -29,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 typedef enum lcd_input_e
 {
-  input_none=0, input_home=1, input_ok=2, input_incr=4, input_decr=8,
+  input_none=0, input_cancel=1, input_select=2, input_up=4, input_down=8,
 } LCDInput;
 
 enum lcd_node_type_e
@@ -37,6 +38,7 @@ enum lcd_node_type_e
   node_null=0, node_print_Pstr, node_print_memstr, node_print_hhmm,
   node_print_hhmmss, node_print_temp, node_print_perc, node_edit_hhmm,
   node_edit_hhmmss, node_edit_temp, node_edit_perc, node_set_menu,
+  node_goto_mode,
 };
 
 typedef struct _lcd_node_s LCDNode;
@@ -44,6 +46,7 @@ typedef struct _lcd_node_s LCDNode;
 union lcd_pointer_u
 {
   const LCDNode* const *n;
+  const LCDNode* m;
   const char *s;
   void *v;
 };
