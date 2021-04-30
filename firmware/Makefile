@@ -3,8 +3,8 @@ MCU_TARGET = atmega8
 PGR = main
 CCFLAGS = -Wall -Wextra -Os --short-enums -flto
 PGR_HW = usbasp
-INCLUDEC = dimmer-glue adc-helper interrupts
-MODULES = dimmer lcdmenus
+INCLUDEC = dimmer-glue lcd-glue adc-helper interrupts
+MODULES = dimmer lcdmenus main-menu
 
 MODOF = $(addsuffix .o,$(addprefix build/,$(MODULES)))
 MODCF = $(addsuffix .c, $(MODULES))
