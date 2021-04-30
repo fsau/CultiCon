@@ -7,23 +7,19 @@
 #include <avr/pgmspace.h>
 #include <util/atomic.h>
 
-#define F_CPU 16000000UL
-#include <util/delay.h>
-
-#include "pins_defs.h"
+#include "pins-defs.h"
 #include "dimmer.h"
 
 // fuses:
 FUSES =
 {
-    .low = ((LFUSE_DEFAULT & FUSE_CKSEL1) | ~(FUSE_CKDIV8&FUSE_CKSEL0)),
+    .low = (LFUSE_DEFAULT),
     .high = (HFUSE_DEFAULT),
-    .extended = (EFUSE_DEFAULT),
 };
 
 #include "dimmer-glue.c"
-#include "adc-helper.c"
-#include "interrupts.c"
+// #include "adc-helper.c"
+// #include "interrupts.c"
 
 void
 main (void)

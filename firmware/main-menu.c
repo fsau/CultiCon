@@ -1,3 +1,5 @@
+#include "main-menu.h"
+
 const char str_culticn[] PROGMEM = "CultiCon v0.1";
 const char str_inicial[] PROGMEM = "Inicializando...";
 const char str_menuhr[] PROGMEM  = "Horário atual";
@@ -10,6 +12,16 @@ const char str_stson[] PROGMEM  = "Ligado";
 const char str_stsoff[] PROGMEM = "Desligado";
 const char str_degc[] PROGMEM = "°C";
 const char str_perc[] PROGMEM = "%rh";
+
+// PGM_P *g_status_string=NULL;
+// RTCtime *g_curr_time=NULL;
+// RTCtime *g_timer_on=NULL;
+// RTCtime *g_timer_off=NULL;
+// fp_t *g_dtemp=NULL;
+// fp_t *g_crtemp=NULL;
+// fp_t *g_dhumd=NULL;
+// fp_t *g_dimmer_on=NULL;
+// fp_t *g_dimmer_off=NULL;
 
 const LCDNode print_init[] PROGMEM =
 {
@@ -81,7 +93,6 @@ const LCDNode print_main[] PROGMEM =
   {.arg=menu_len,.type=node_set_menu,.ptr.n=disp_menu},
 };
 
-const LCDNode *print_main_v=print_main;
 const LCDNode *print_init_v=print_init;
-const LCDNode *str_stson_v=str_stson;
-const LCDNode *str_stsoff_v=str_stsoff;
+const char *str_stson_v=str_stson;
+const char *str_stsoff_v=str_stsoff;

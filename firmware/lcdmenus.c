@@ -2,41 +2,6 @@
 
 #define NULL (void*)0
 
-// Private types:
-enum lcd_node_type_e
-{
-  node_null=0, node_print_Pstr, node_print_memstr, node_print_hhmm,
-  node_print_hhmmss, node_print_temp, node_print_perc, node_edit_hhmm,
-  node_edit_hhmmss, node_edit_temp, node_edit_perc, node_set_menu,
-};
-
-union lcd_pointer_u
-{
-  const LCDNode* const *n;
-  const char *s;
-  void *v;
-};
-
-typedef struct _lcd_node_s
-{
-  enum lcd_node_type_e type;
-  union lcd_pointer_u ptr;
-  uint8_t arg;
-} LCDNode;
-
-// PGM_P *g_status_string=NULL;
-// RTCtime *g_curr_time=NULL;
-// RTCtime *g_timer_on=NULL;
-// RTCtime *g_timer_off=NULL;
-// fp_t *g_dtemp=NULL;
-// fp_t *g_crtemp=NULL;
-// fp_t *g_dhumd=NULL;
-// fp_t *g_dimmer_on=NULL;
-// fp_t *g_dimmer_off=NULL;
-
-// LCD menus specifications:
-#include "main-menu.c"
-
 // Private/internal variables:
 const LCDNode *cmode_node=NULL, *cinput_node, *cmenu_node;
 LCDInput input_flags=0;
@@ -343,7 +308,7 @@ read_mode(const LCDNode* mode)
 // Public functions:
 
 void
-lcd_init(void)
+lcd_init(LCDNode *init)
 {
   lcd_send_data(0,0x00);
 
@@ -377,6 +342,8 @@ lcd_init(void)
 
   _delay_ms(5);
   lcd_send_data(0, 0x0C); // display on, cursor off
+
+
 }
 
 void
